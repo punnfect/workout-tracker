@@ -26,6 +26,9 @@ public class Workout {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(name = "title", length = 50)
+    private String title;
+
     @Column(name ="workout_date", nullable = false)
     private LocalDate workoutDate;
 

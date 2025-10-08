@@ -34,20 +34,21 @@ public class WorkoutService {
 
     //Creates a new base workout with only workoutDate to a user
     @Transactional
-    public Workout createNewWorkout(LocalDate workoutDate) {
+    public Workout createNewWorkout(LocalDate workoutDate, String title) {
 
         User currentUser = getCurrentUser();
 
         Workout newWorkout = new Workout();
         newWorkout.setUser(currentUser);
         newWorkout.setWorkoutDate(workoutDate);
+        newWorkout.setTitle(title);
 
         return workoutRepo.save(newWorkout);
     }
 
     //Will save entire workout entered by user
     @Transactional
-    public Workout saveWorkoutDetails(Long workoutId, LocalTime timeEnter, LocalTime timeLeave,
+    public Workout saveWorkoutDetails(Long workoutId, LocalTime timeEnter, LocalTime timeLeave, String workoutNotes,
                                       List<ExerciseSetDto> exerciseSets, List<CardioSessionDto> cardioSessions) {
 
         //finds workout to attach all info too
@@ -57,6 +58,9 @@ public class WorkoutService {
         //set your times
         workout.setTimeEnter(timeEnter);
         workout.setTimeLeave(timeLeave);
+
+        //set your notes if any
+        workout.setNotes(workoutNotes);
 
         //gets all exercise sets and adds them to the workouts list
         for (ExerciseSetDto setDto : exerciseSets) {
@@ -69,6 +73,7 @@ public class WorkoutService {
             newSet.setSetNumber(setDto.getSetNumber());
             newSet.setWeight(setDto.getWeight());
             newSet.setReps(setDto.getReps());
+            newSet.setNotes(setDto.getNotes());
             exerciseSetRepo.save(newSet);
         }
 
@@ -82,11 +87,24 @@ public class WorkoutService {
             newSession.setCardioList(cardioType);
             newSession.setDurationMinutes(sessionDto.getDurationMinutes());
             newSession.setDistance(sessionDto.getDistance());
+            newSession.setNotes(sessionDto.getNotes());
             cardioSessionRepo.save(newSession);
         }
 
         return workoutRepo.save(workout);
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

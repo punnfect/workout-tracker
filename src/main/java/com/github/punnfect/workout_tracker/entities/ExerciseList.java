@@ -23,9 +23,6 @@ public class ExerciseList {
     @Column(name = "name", nullable = false,unique = true, length = 100)
     private  String name;
 
-    @Column(name = "category", length = 50)
-    private String category;
-
     @OneToMany(mappedBy = "exerciseList", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ExerciseSet> exerciseSets;
 }

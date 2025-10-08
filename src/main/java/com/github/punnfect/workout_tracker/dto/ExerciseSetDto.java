@@ -9,4 +9,5 @@ public class ExerciseSetDto {
     private int setNumber;
     private BigDecimal weight;
     private int reps;
+    private String notes;
 }

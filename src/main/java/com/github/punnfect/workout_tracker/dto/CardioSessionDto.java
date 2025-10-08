@@ -8,4 +8,5 @@ public class CardioSessionDto {
     private Long cardioListId;
     private int durationMinutes;
     private BigDecimal distance;
+    private String notes;
 }
