@@ -58,15 +58,12 @@ public class DataInitializer implements CommandLineRunner {
             log.info("Creating initial exercises...");
             ExerciseList bench = new ExerciseList();
             bench.setName("Bench Press");
-            bench.setCategory("Chest");
 
             ExerciseList squat = new ExerciseList();
             squat.setName("Squat");
-            squat.setCategory("Legs");
 
             ExerciseList deadlift = new ExerciseList();
             deadlift.setName("Deadlift");
-            deadlift.setCategory("Back");
 
             exerciseListRepo.saveAll(Arrays.asList(bench, squat, deadlift));
             log.info("Initial exercises created.");
