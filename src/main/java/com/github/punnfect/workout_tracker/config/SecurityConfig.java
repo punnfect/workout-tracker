@@ -17,7 +17,8 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
+    //Allows access to h2console temp for developing
+    //Only shows login page if not logged in
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -25,7 +26,12 @@ public class SecurityConfig {
                         .requestMatchers("/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
-
+                // --- Add this formLogin configuration ---
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/", true)
+                        .permitAll()
+                )
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/h2-console/**")
                 )
