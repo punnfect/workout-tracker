@@ -2,6 +2,7 @@ package com.github.punnfect.workout_tracker.services;
 
 import com.github.punnfect.workout_tracker.dto.CardioSessionDto;
 import com.github.punnfect.workout_tracker.dto.ExerciseSetDto;
+import com.github.punnfect.workout_tracker.dto.WorkoutSummaryDto;
 import com.github.punnfect.workout_tracker.entities.*;
 import com.github.punnfect.workout_tracker.repository.*;
 import jakarta.transaction.Transactional;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class WorkoutService {
@@ -94,6 +97,43 @@ public class WorkoutService {
         return workoutRepo.save(workout);
     }
 
+    //returns entire workout history in summary form
+    public List<WorkoutSummaryDto> getWorkoutHistoryForCurrentUser() {
+        User currentUser = getCurrentUser();
+        //get entire workout list
+        List<Workout> workouts = workoutRepo.findByUserOrderByWorkoutDateDesc(currentUser);
+
+        //return a list of the summaries of workouts
+        return workouts.stream()
+                .map(workout -> new WorkoutSummaryDto(
+                        workout.getId(),
+                        workout.getWorkoutDate(),
+                        workout.getTitle()))
+                .collect(Collectors.toList());
+    }
+
+    //returns the entire workout by ID
+    public Optional<Workout> getWorkoutDetails(Long workoutId) {
+        return workoutRepo.findById(workoutId);
+    }
+
+    //deletes an entire workout and all associated sets/sessions
+    @Transactional
+    public void deleteWorkout(Long workoutId) {
+        workoutRepo.deleteById(workoutId);
+    }
+
+    //deletes an exercise set from a workout
+    @Transactional
+    public void deleteExerciseSet(Long exerciseSetId) {
+        exerciseSetRepo.deleteById(exerciseSetId);
+    }
+
+    //deletes a cardio session from a workout
+    @Transactional
+    public void deleteCardioSession(Long cardioSessionId) {
+        cardioSessionRepo.deleteById(cardioSessionId);
+    }
 
 
 
