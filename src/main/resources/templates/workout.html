@@ -1,10 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Workout Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 th:text="${workout.title}">Workout Title</h1>
+            <h5 class="text-muted" th:text="${#temporals.format(workout.workoutDate, 'MMMM dd, yyyy')}">Workout Date</h5>
+        </div>
+        <a href="/" class="btn btn-secondary">Back to History</a>
+    </div>
+    <hr>
 
+    <div class="card mb-4">
+        <div class="card-header">Workout Details</div>
+        <div class="card-body">
+            <p><strong>Time: </strong> <span th:text="${workout.timeEnter}"></span> - <span th:text="${workout.timeLeave}"></span></p>
+            <p><strong>Notes: </strong> <span th:text="${workout.notes}"></span></p>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">Exercises</div>
+        <div class="card-body">
+            <div th:if="${workout.exerciseSets.isEmpty()}">No exercises logged for this workout.</div>
+            <table class="table table-striped" th:unless="${workout.exerciseSets.isEmpty()}">
+                <thead>
+                <tr>
+                    <th>Exercise</th>
+                    <th>Set</th>
+                    <th>Weight</th>
+                    <th>Reps</th>
+                    <th>Notes</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="set : ${workout.exerciseSets}">
+                    <td th:text="${set.exerciseList.name}">Bench Press</td>
+                    <td th:text="${set.setNumber}">1</td>
+                    <td th:text="${set.weight}">135.00</td>
+                    <td th:text="${set.reps}">10</td>
+                    <td th:text="${set.notes}">Good form</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Cardio</div>
+        <div class="card-body">
+            <div th:if="${workout.cardioSessions.isEmpty()}">No cardio logged for this workout.</div>
+            <table class="table table-striped" th:unless="${workout.cardioSessions.isEmpty()}">
+                <thead>
+                <tr>
+                    <th>Activity</th>
+                    <th>Duration (minutes)</th>
+                    <th>Distance</th>
+                    <th>Notes</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="session : ${workout.cardioSessions}">
+                    <td th:text="${session.cardioList.name}">Treadmill</td>
+                    <td th:text="${session.durationMinutes}">30</td>
+                    <td th:text="${session.distance}">2.5</td>
+                    <td th:text="${session.notes}">Easy pace</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
 </body>
 </html>

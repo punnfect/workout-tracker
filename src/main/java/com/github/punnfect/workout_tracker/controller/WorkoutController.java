@@ -1,7 +1,11 @@
 package com.github.punnfect.workout_tracker.controller;
 
 import com.github.punnfect.workout_tracker.dto.WorkoutSummaryDto;
+import com.github.punnfect.workout_tracker.entities.CardioList;
+import com.github.punnfect.workout_tracker.entities.ExerciseList;
 import com.github.punnfect.workout_tracker.entities.Workout;
+import com.github.punnfect.workout_tracker.services.CardioService;
+import com.github.punnfect.workout_tracker.services.ExerciseService;
 import com.github.punnfect.workout_tracker.services.WorkoutService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,9 +22,13 @@ import java.util.Optional;
 public class WorkoutController {
 
     private final WorkoutService workoutService;
+    private final ExerciseService exerciseService;
+    private final CardioService cardioService;
 
-    public WorkoutController(WorkoutService workoutService) {
+    public WorkoutController(WorkoutService workoutService, ExerciseService exerciseService, CardioService cardioService) {
         this.workoutService = workoutService;
+        this.exerciseService = exerciseService;
+        this.cardioService = cardioService;
     }
 
     //displays home page with list of all users workout summaries
@@ -31,18 +39,31 @@ public class WorkoutController {
         return "home";
     }
 
-    //displays addWorkout page for creating a new workout
-    @GetMapping("/workouts/new")
-    public String showAddWorkoutForm() {
-        return "addWorkout";
-    }
 
-    //redirects to the workout page for the created workout
+    //Creates base for workout and redirects to add all workout info page
     @PostMapping("/workouts/create")
     public String createWorkout(@RequestParam("workoutDate") LocalDate workoutDate,
                                 @RequestParam("title") String title) {
         Workout newWorkout = workoutService.createNewWorkout(workoutDate, title);
-        return "redirect:/workout/" + newWorkout.getId();
+
+        return "redirect:/workouts/" + newWorkout.getId() + "/add";
+    }
+
+    //returns addWorkout page for adding entire workout, gives access to exercises/cardio in db
+    @GetMapping("/workouts/{id}/add")
+    public String showAddWorkoutDetailsForm(@PathVariable("id") Long id, Model model) {
+        Optional<Workout> workoutOpt = workoutService.getWorkoutDetails(id);
+        List<ExerciseList> allExercises = exerciseService.getAllExercises();
+        List<CardioList> allCardio = cardioService.getAllCardioActivities();
+
+        if (workoutOpt.isPresent()) {
+            model.addAttribute("workout", workoutOpt.get());
+            model.addAttribute("allExercises", allExercises);
+            model.addAttribute("allCardio", allCardio);
+            return "addWorkout";
+        } else {
+            return "redirect:/";
+        }
     }
 
     //returns workout page for entire workout
