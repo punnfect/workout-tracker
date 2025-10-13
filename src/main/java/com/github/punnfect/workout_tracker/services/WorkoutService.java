@@ -51,25 +51,22 @@ public class WorkoutService {
 
     //Will save entire workout entered by user
     @Transactional
-    public Workout saveWorkoutDetails(Long workoutId, LocalTime timeEnter, LocalTime timeLeave, String workoutNotes,
+    public Workout saveWorkoutDetails(Long workoutId, String workoutNotes, LocalTime timeEnter, LocalTime timeLeave,
                                       List<ExerciseSetDto> exerciseSets, List<CardioSessionDto> cardioSessions) {
 
-        //finds workout to attach all info too
         Workout workout = workoutRepo.findById(workoutId)
                 .orElseThrow(() -> new RuntimeException("Workout not found with id: " + workoutId));
 
-        //set your times
+        workout.setNotes(workoutNotes);
         workout.setTimeEnter(timeEnter);
         workout.setTimeLeave(timeLeave);
 
-        //set your notes if any
-        workout.setNotes(workoutNotes);
+        exerciseSetRepo.deleteAll(workout.getExerciseSets());
+        cardioSessionRepo.deleteAll(workout.getCardioSessions());
 
-        //gets all exercise sets and adds them to the workouts list
         for (ExerciseSetDto setDto : exerciseSets) {
             ExerciseList exerciseType = exerciseListRepo.findById(setDto.getExerciseListId())
                     .orElseThrow(() -> new RuntimeException("Exercise not found with id: " + setDto.getExerciseListId()));
-
             ExerciseSet newSet = new ExerciseSet();
             newSet.setWorkout(workout);
             newSet.setExerciseList(exerciseType);
@@ -80,11 +77,9 @@ public class WorkoutService {
             exerciseSetRepo.save(newSet);
         }
 
-        //gets all cardio sessions and adds them to the workouts list
         for (CardioSessionDto sessionDto : cardioSessions) {
             CardioList cardioType = cardioListRepo.findById(sessionDto.getCardioListId())
                     .orElseThrow(() -> new RuntimeException("Cardio activity not found with id: " + sessionDto.getCardioListId()));
-
             CardioSession newSession = new CardioSession();
             newSession.setWorkout(workout);
             newSession.setCardioList(cardioType);

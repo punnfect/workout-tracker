@@ -3,6 +3,7 @@ package com.github.punnfect.workout_tracker.services;
 import com.github.punnfect.workout_tracker.entities.ExerciseList;
 import com.github.punnfect.workout_tracker.repository.ExerciseListRepo;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,8 +16,7 @@ public class ExerciseService {
         this.exerciseListRepo = exerciseListRepo;
     }
 
-    //Returns all db entered exercises
-    public List<ExerciseList> getAllExercises() {
-        return exerciseListRepo.findAll();
-    }
+    //returns all exercise options in db
+    @Transactional(readOnly = true)
+    public List<ExerciseList> getAllExercises() { return exerciseListRepo.findAll(); }
 }
