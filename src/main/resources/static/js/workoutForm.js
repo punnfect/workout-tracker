@@ -1,11 +1,14 @@
+console.log("Exercises available:", window.allExercises);
+console.log("Cardio activities available:", window.allCardio);
 
 let exerciseBlockIndex = 0;
 let cardioIndex = 0;
+let totalSetIndex = 0;
 
-// Attach the functions to the 'window' object so the 'onclick' attributes in the HTML can find them.
 window.addExercise = function() {
     const container = document.getElementById('exercise-container');
     const setContainerId = `sets-container-${exerciseBlockIndex}`;
+    const selectId = `exercise-select-${exerciseBlockIndex}`;
 
     let options = '<option value="">-- Select Exercise --</option>';
     window.allExercises.forEach(ex => {
@@ -18,34 +21,41 @@ window.addExercise = function() {
         <div class="d-flex justify-content-between align-items-center">
             <div class="mb-3 w-75">
                 <label class="form-label">Exercise Name</label>
-                <select name="exerciseSets[${exerciseBlockIndex}].exerciseListId" class="form-select">${options}</select>
+                <select id="${selectId}" class="form-select">${options}</select>
             </div>
             <button type="button" class="btn-close" onclick="this.parentElement.parentElement.remove()"></button>
         </div>
         <div id="${setContainerId}"></div>
-        <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="addSet('${setContainerId}', ${exerciseBlockIndex})">+ Add Set</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="addSet('${setContainerId}', '${selectId}')">+ Add Set</button>
     `;
     container.appendChild(newExerciseBlock);
-    addSet(setContainerId, exerciseBlockIndex);
+
+    addSet(setContainerId, selectId);
     exerciseBlockIndex++;
 }
 
-window.addSet = function(containerId, exIndex) {
+window.addSet = function(containerId, selectId) {
     const setsContainer = document.getElementById(containerId);
-    const setIndex = setsContainer.children.length;
-    const namePrefix = `exerciseSets[${exIndex * 10 + setIndex}]`;
+    const exerciseSelect = document.getElementById(selectId);
+    const selectedExerciseId = exerciseSelect.value;
+
+
+    const setIndexInBlock = setsContainer.children.length;
+    const namePrefix = `exerciseSets[${totalSetIndex}]`;
 
     const newSetRow = document.createElement('div');
     newSetRow.className = 'row g-3 align-items-center mb-2';
     newSetRow.innerHTML = `
-        <input type="hidden" name="${namePrefix}.setNumber" value="${setIndex + 1}" />
-        <div class="col-auto"><strong>Set ${setIndex + 1}</strong></div>
+        <input type="hidden" name="${namePrefix}.exerciseListId" value="${selectedExerciseId}" />
+        <input type="hidden" name="${namePrefix}.setNumber" value="${setIndexInBlock + 1}" />
+        <div class="col-auto"><strong>Set ${setIndexInBlock + 1}</strong></div>
         <div class="col"><input type="number" step="0.01" name="${namePrefix}.weight" class="form-control" placeholder="Weight"></div>
         <div class="col"><input type="number" name="${namePrefix}.reps" class="form-control" placeholder="Reps"></div>
         <div class="col"><input type="text" name="${namePrefix}.notes" class="form-control" placeholder="Notes"></div>
         <div class="col-auto"><button type="button" class="btn-close" onclick="this.parentElement.parentElement.remove()"></button></div>
     `;
     setsContainer.appendChild(newSetRow);
+    totalSetIndex++;
 }
 
 window.addCardio = function() {
