@@ -8,10 +8,10 @@ import com.github.punnfect.workout_tracker.entities.Workout;
 import com.github.punnfect.workout_tracker.services.CardioService;
 import com.github.punnfect.workout_tracker.services.ExerciseService;
 import com.github.punnfect.workout_tracker.services.WorkoutService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -20,9 +20,6 @@ import java.util.Optional;
 
 @Controller
 public class WorkoutController {
-
-
-    private static final Logger log = LoggerFactory.getLogger(WorkoutController.class);
 
 
     private final WorkoutService workoutService;
@@ -56,7 +53,23 @@ public class WorkoutController {
     //Adds everything from addWorkout page to the associated workout
     @PostMapping("/workouts/{id}/save")
     public String saveWorkoutDetails(@PathVariable("id") Long workoutId,
-                                     @ModelAttribute WorkoutDetailsDto detailsDto) {
+                                     @Valid @ModelAttribute("detailsDto") WorkoutDetailsDto detailsDto,
+                                     BindingResult bindingResult,
+                                     Model model) {
+
+        //any errors on backend will reload form or redirect to home
+        if (bindingResult.hasErrors()) {
+
+            Optional<Workout> workoutOpt = workoutService.getWorkoutDetails(workoutId);
+            if (workoutOpt.isPresent()) {
+                model.addAttribute("workout", workoutOpt.get());
+                model.addAttribute("allExercises", exerciseService.getAllExercises());
+                model.addAttribute("allCardio", cardioService.getAllCardioActivities());
+                return "addWorkout";
+            } else {
+                return "redirect:/";
+            }
+        }
         workoutService.saveWorkoutDetails(
                 workoutId,
                 detailsDto.getWorkoutNotes(),
@@ -81,11 +94,6 @@ public class WorkoutController {
             model.addAttribute("allCardio", allCardio);
             model.addAttribute("detailsDto", new WorkoutDetailsDto());
 
-            // --- ADDED LOGGING ---
-            // This will print the exact data being sent to the template.
-            log.info("Rendering addWorkout page for workout ID: {}", id);
-            log.info("Number of exercises being sent to template: {}", allExercises.size());
-            log.info("Number of cardio activities being sent to template: {}", allCardio.size());
 
             return "addWorkout";
         } else {
