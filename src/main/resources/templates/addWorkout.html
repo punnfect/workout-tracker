@@ -37,12 +37,16 @@
 </div>
 
 <script th:inline="javascript">
-    /*<![CDATA[*/
-    window.allExercises = /*[[${allExercises}]]*/ [];
-    window.allCardio = /*[[${allCardio}]]*/ [];
-    /*]]>*/
-</script>
+    window.allExercises = [];
+    /*[# th:each="exercise : ${allExercises}"]*/
+    window.allExercises.push({id: /*[[${exercise.id}]]*/, name: /*[[${exercise.name}]]*/});
+    /*[/]*/
 
+    window.allCardio = [];
+    /*[# th:each="cardio : ${allCardio}"]*/
+    window.allCardio.push({id: /*[[${cardio.id}]]*/, name: /*[[${cardio.name}]]*/});
+    /*[/]*/
+</script>
 <script th:src="@{/js/workoutForm.js}"></script>
 
 </body>
