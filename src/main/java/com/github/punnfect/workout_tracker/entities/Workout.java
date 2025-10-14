@@ -42,6 +42,7 @@ public class Workout {
     private String notes;
 
     @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("exerciseList, setNumber")
     private List<ExerciseSet> exerciseSets;
 
     @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, orphanRemoval = true)

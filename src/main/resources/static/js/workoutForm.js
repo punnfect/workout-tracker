@@ -39,6 +39,10 @@ window.addSet = function(containerId, selectId) {
     const exerciseSelect = document.getElementById(selectId);
     const selectedExerciseId = exerciseSelect.value;
 
+    if (!selectedExerciseId) {
+        alert("Please select an exercise first.");
+        return;
+    }
 
     const setIndexInBlock = setsContainer.children.length;
     const namePrefix = `exerciseSets[${totalSetIndex}]`;
@@ -49,8 +53,8 @@ window.addSet = function(containerId, selectId) {
         <input type="hidden" name="${namePrefix}.exerciseListId" value="${selectedExerciseId}" />
         <input type="hidden" name="${namePrefix}.setNumber" value="${setIndexInBlock + 1}" />
         <div class="col-auto"><strong>Set ${setIndexInBlock + 1}</strong></div>
-        <div class="col"><input type="number" step="0.01" name="${namePrefix}.weight" class="form-control" placeholder="Weight"></div>
-        <div class="col"><input type="number" name="${namePrefix}.reps" class="form-control" placeholder="Reps"></div>
+        <div class="col"><input type="number" step="0.01" name="${namePrefix}.weight" class="form-control" placeholder="Weight" required></div>
+        <div class="col"><input type="number" name="${namePrefix}.reps" class="form-control" placeholder="Reps" required></div>
         <div class="col"><input type="text" name="${namePrefix}.notes" class="form-control" placeholder="Notes"></div>
         <div class="col-auto"><button type="button" class="btn-close" onclick="this.parentElement.parentElement.remove()"></button></div>
     `;
@@ -70,9 +74,9 @@ window.addCardio = function() {
     newCardioRow.innerHTML = `
         <div class="col-md-3">
             <label class="form-label">Activity</label>
-            <select name="cardioSessions[${cardioIndex}].cardioListId" class="form-select">${options}</select>
+            <select name="cardioSessions[${cardioIndex}].cardioListId" class="form-select" required>${options}</select>
         </div>
-        <div class="col-md-2"><label class="form-label">Duration (min)</label><input type="number" name="cardioSessions[${cardioIndex}].durationMinutes" class="form-control"></div>
+        <div class="col-md-2"><label class="form-label">Duration (min)</label><input type="number" name="cardioSessions[${cardioIndex}].durationMinutes" class="form-control" required></div>
         <div class="col-md-2"><label class="form-label">Distance</label><input type="number" step="0.01" name="cardioSessions[${cardioIndex}].distance" class="form-control"></div>
         <div class="col-md-4"><label class="form-label">Notes</label><input type="text" name="cardioSessions[${cardioIndex}].notes" class="form-control"></div>
         <div class="col-md-1 d-flex align-items-end"><button type="button" class="btn-close" onclick="this.parentElement.parentElement.remove()"></button></div>
