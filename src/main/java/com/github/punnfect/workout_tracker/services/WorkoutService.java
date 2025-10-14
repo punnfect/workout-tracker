@@ -50,7 +50,6 @@ public class WorkoutService {
     }
 
     //Will save entire workout entered by user
-    @Transactional
     public Workout saveWorkoutDetails(Long workoutId, String workoutNotes, LocalTime timeEnter, LocalTime timeLeave,
                                       List<ExerciseSetDto> exerciseSets, List<CardioSessionDto> cardioSessions) {
 
@@ -64,29 +63,45 @@ public class WorkoutService {
         exerciseSetRepo.deleteAll(workout.getExerciseSets());
         cardioSessionRepo.deleteAll(workout.getCardioSessions());
 
-        for (ExerciseSetDto setDto : exerciseSets) {
-            ExerciseList exerciseType = exerciseListRepo.findById(setDto.getExerciseListId())
-                    .orElseThrow(() -> new RuntimeException("Exercise not found with id: " + setDto.getExerciseListId()));
-            ExerciseSet newSet = new ExerciseSet();
-            newSet.setWorkout(workout);
-            newSet.setExerciseList(exerciseType);
-            newSet.setSetNumber(setDto.getSetNumber());
-            newSet.setWeight(setDto.getWeight());
-            newSet.setReps(setDto.getReps());
-            newSet.setNotes(setDto.getNotes());
-            exerciseSetRepo.save(newSet);
+
+        if (exerciseSets != null) {
+            for (ExerciseSetDto setDto : exerciseSets) {
+
+                if (setDto.getExerciseListId() == null) {
+                    continue;
+                }
+                ExerciseList exerciseType = exerciseListRepo.findById(setDto.getExerciseListId())
+                        .orElseThrow(() -> new RuntimeException("Exercise not found with id: " + setDto.getExerciseListId()));
+
+                ExerciseSet newSet = new ExerciseSet();
+                newSet.setWorkout(workout);
+                newSet.setExerciseList(exerciseType);
+                newSet.setSetNumber(setDto.getSetNumber());
+                newSet.setWeight(setDto.getWeight());
+                newSet.setReps(setDto.getReps());
+                newSet.setNotes(setDto.getNotes());
+                exerciseSetRepo.save(newSet);
+            }
         }
 
-        for (CardioSessionDto sessionDto : cardioSessions) {
-            CardioList cardioType = cardioListRepo.findById(sessionDto.getCardioListId())
-                    .orElseThrow(() -> new RuntimeException("Cardio activity not found with id: " + sessionDto.getCardioListId()));
-            CardioSession newSession = new CardioSession();
-            newSession.setWorkout(workout);
-            newSession.setCardioList(cardioType);
-            newSession.setDurationMinutes(sessionDto.getDurationMinutes());
-            newSession.setDistance(sessionDto.getDistance());
-            newSession.setNotes(sessionDto.getNotes());
-            cardioSessionRepo.save(newSession);
+
+        if (cardioSessions != null) {
+            for (CardioSessionDto sessionDto : cardioSessions) {
+
+                if (sessionDto.getCardioListId() == null) {
+                    continue;
+                }
+                CardioList cardioType = cardioListRepo.findById(sessionDto.getCardioListId())
+                        .orElseThrow(() -> new RuntimeException("Cardio activity not found with id: " + sessionDto.getCardioListId()));
+
+                CardioSession newSession = new CardioSession();
+                newSession.setWorkout(workout);
+                newSession.setCardioList(cardioType);
+                newSession.setDurationMinutes(sessionDto.getDurationMinutes());
+                newSession.setDistance(sessionDto.getDistance());
+                newSession.setNotes(sessionDto.getNotes());
+                cardioSessionRepo.save(newSession);
+            }
         }
 
         return workoutRepo.save(workout);
@@ -129,16 +144,6 @@ public class WorkoutService {
     public void deleteCardioSession(Long cardioSessionId) {
         cardioSessionRepo.deleteById(cardioSessionId);
     }
-
-
-
-
-
-
-
-
-
-
 
 
 
