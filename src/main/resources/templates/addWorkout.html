@@ -11,12 +11,39 @@
     <h5 class="text-muted" th:text="${#temporals.format(workout.workoutDate, 'MMMM dd, yyyy')}">Workout Date</h5>
     <hr>
 
-    <div class="alert alert-info">
-        This is the page where you will add all your workout details.
-    </div>
-
-    <a href="/" class="btn btn-secondary mt-4">Back to Home</a>
-
+    <form th:action="@{/workouts/{id}/save(id=${workout.id})}" th:object="${detailsDto}" method="post">
+        <div class="card bg-light p-3 mb-4">
+            <h4>General Details</h4>
+            <div class="row">
+                <div class="col-md-6 mb-3"><label for="timeEnter" class="form-label">Time Enter</label><input type="time" id="timeEnter" th:field="*{timeEnter}" class="form-control"></div>
+                <div class="col-md-6 mb-3"><label for="timeLeave" class="form-label">Time Leave</label><input type="time" id="timeLeave" th:field="*{timeLeave}" class="form-control"></div>
+            </div>
+            <div class="mb-3"><label for="workoutNotes" class="form-label">Workout Notes</label><textarea id="workoutNotes" th:field="*{workoutNotes}" class="form-control" rows="3"></textarea></div>
+        </div>
+        <div class="card p-3 mb-4">
+            <h4>Exercises</h4>
+            <div id="exercise-container"></div>
+            <button type="button" class="btn btn-outline-primary mt-2" onclick="addExercise()">+ Add Exercise</button>
+        </div>
+        <div class="card p-3 mb-4">
+            <h4>Cardio</h4>
+            <div id="cardio-container"></div>
+            <button type="button" class="btn btn-outline-primary mt-2" onclick="addCardio()">+ Add Cardio</button>
+        </div>
+        <hr>
+        <a href="/" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-success">Save Workout</button>
+    </form>
 </div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    window.allExercises = /*[[${allExercises}]]*/ [];
+    window.allCardio = /*[[${allCardio}]]*/ [];
+    /*]]>*/
+</script>
+
+<script th:src="@{/js/workoutForm.js}"></script>
+
 </body>
 </html>

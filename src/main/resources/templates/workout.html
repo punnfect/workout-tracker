@@ -65,11 +65,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="session : ${workout.cardioSessions}">
-                    <td th:text="${session.cardioList.name}">Treadmill</td>
-                    <td th:text="${session.durationMinutes}">30</td>
-                    <td th:text="${session.distance}">2.5</td>
-                    <td th:text="${session.notes}">Easy pace</td>
+                <tr th:each="cardioSess : ${workout.cardioSessions}">
+                    <td th:text="${cardioSess.cardioList.name}">Treadmill</td>
+                    <td th:text="${cardioSess.durationMinutes}">30</td>
+                    <td th:text="${cardioSess.distance}">2.5</td>
+                    <td th:text="${cardioSess.notes}">Easy pace</td>
                 </tr>
                 </tbody>
             </table>

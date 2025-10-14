@@ -8,6 +8,8 @@ import com.github.punnfect.workout_tracker.entities.Workout;
 import com.github.punnfect.workout_tracker.services.CardioService;
 import com.github.punnfect.workout_tracker.services.ExerciseService;
 import com.github.punnfect.workout_tracker.services.WorkoutService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,10 @@ import java.util.Optional;
 
 @Controller
 public class WorkoutController {
+
+
+    private static final Logger log = LoggerFactory.getLogger(WorkoutController.class);
+
 
     private final WorkoutService workoutService;
     private final ExerciseService exerciseService;
@@ -74,6 +80,13 @@ public class WorkoutController {
             model.addAttribute("allExercises", allExercises);
             model.addAttribute("allCardio", allCardio);
             model.addAttribute("detailsDto", new WorkoutDetailsDto());
+
+            // --- ADDED LOGGING ---
+            // This will print the exact data being sent to the template.
+            log.info("Rendering addWorkout page for workout ID: {}", id);
+            log.info("Number of exercises being sent to template: {}", allExercises.size());
+            log.info("Number of cardio activities being sent to template: {}", allCardio.size());
+
             return "addWorkout";
         } else {
             return "redirect:/";
