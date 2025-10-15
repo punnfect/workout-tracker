@@ -5,6 +5,29 @@ let exerciseBlockIndex = 0;
 let cardioIndex = 0;
 let totalSetIndex = 0;
 
+
+function updateExerciseDropdowns() {
+    const allSelects = document.querySelectorAll('.exercise-select');
+    const selectedValues = new Set();
+
+    allSelects.forEach(select => {
+        if (select.value) {
+            selectedValues.add(select.value);
+        }
+    });
+
+    allSelects.forEach(select => {
+        for (const option of select.options) {
+            if (option.value && selectedValues.has(option.value) && option.value !== select.value) {
+                option.disabled = true;
+            } else {
+                option.disabled = false;
+            }
+        }
+    });
+}
+
+
 window.addExercise = function() {
     const container = document.getElementById('exercise-container');
     const setContainerId = `sets-container-${exerciseBlockIndex}`;
@@ -21,21 +44,22 @@ window.addExercise = function() {
         <div class="d-flex justify-content-between align-items-center">
             <div class="mb-3 w-75">
                 <label class="form-label">Exercise Name</label>
-                <select id="${selectId}" class="form-select" data-first-set-added="false">${options}</select>
+                <select id="${selectId}" class="form-select exercise-select" data-first-set-added="false">${options}</select>
             </div>
-            <button type="button" class="btn-close" onclick="this.parentElement.parentElement.remove()"></button>
+            <button type="button" class="btn-close" onclick="this.parentElement.parentElement.remove(); updateExerciseDropdowns();"></button>
         </div>
         <div id="${setContainerId}"></div>
         <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="addSet('${setContainerId}', '${selectId}')">+ Add Set</button>
     `;
     container.appendChild(newExerciseBlock);
-
+    updateExerciseDropdowns();
 
     document.getElementById(selectId).addEventListener('change', function() {
         if (this.value && this.getAttribute('data-first-set-added') === 'false') {
             addSet(setContainerId, selectId);
-            this.setAttribute('data-first-set-added', 'true'); // Mark that the first set has been added
+            this.setAttribute('data-first-set-added', 'true');
         }
+        updateExerciseDropdowns();
     });
 
     exerciseBlockIndex++;
