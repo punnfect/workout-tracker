@@ -21,7 +21,7 @@ window.addExercise = function() {
         <div class="d-flex justify-content-between align-items-center">
             <div class="mb-3 w-75">
                 <label class="form-label">Exercise Name</label>
-                <select id="${selectId}" class="form-select">${options}</select>
+                <select id="${selectId}" class="form-select" data-first-set-added="false">${options}</select>
             </div>
             <button type="button" class="btn-close" onclick="this.parentElement.parentElement.remove()"></button>
         </div>
@@ -30,7 +30,14 @@ window.addExercise = function() {
     `;
     container.appendChild(newExerciseBlock);
 
-    addSet(setContainerId, selectId);
+
+    document.getElementById(selectId).addEventListener('change', function() {
+        if (this.value && this.getAttribute('data-first-set-added') === 'false') {
+            addSet(setContainerId, selectId);
+            this.setAttribute('data-first-set-added', 'true'); // Mark that the first set has been added
+        }
+    });
+
     exerciseBlockIndex++;
 }
 
