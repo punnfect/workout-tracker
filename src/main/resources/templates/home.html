@@ -38,14 +38,15 @@
     </div>
 
     <div class="list-group mt-3" th:unless="${workouts.isEmpty()}">
-        <a th:each="workout : ${workouts}"
-           th:href="@{/workout/{id}(id=${workout.id})}"
-           class="list-group-item list-group-item-action">
-            <div class="d-flex w-100 justify-content-between">
+        <div th:each="workout : ${workouts}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            <a th:href="@{/workout/{id}(id=${workout.id})}" class="text-decoration-none text-dark flex-grow-1">
                 <h5 class="mb-1" th:text="${workout.title}">Workout Title</h5>
                 <small th:text="${#temporals.format(workout.workoutDate, 'MMMM dd, yyyy')}">Date</small>
-            </div>
-        </a>
+            </a>
+            <form th:action="@{/workouts/{id}/delete(id=${workout.id})}" method="post" class="ms-3">
+                <button type="submit" class="btn-close" aria-label="Delete" onclick="return confirm('Are you sure you want to delete this workout?');"></button>
+            </form>
+        </div>
     </div>
 </div>
 </body>
