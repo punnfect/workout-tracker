@@ -50,6 +50,13 @@ public class WorkoutController {
         return "redirect:/workouts/" + newWorkout.getId() + "/add";
     }
 
+    //Deletes a workout and redirects to home
+    @PostMapping("/workouts/{id}/delete")
+    public String deleteWorkout(@PathVariable("id") Long id) {
+        workoutService.deleteWorkout(id);
+        return "redirect:/";
+    }
+
     //Adds everything from addWorkout page to the associated workout
     @PostMapping("/workouts/{id}/save")
     public String saveWorkoutDetails(@PathVariable("id") Long workoutId,
