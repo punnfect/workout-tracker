@@ -5,7 +5,7 @@ import com.github.punnfect.workout_tracker.dto.ExerciseSetDto;
 import com.github.punnfect.workout_tracker.dto.WorkoutSummaryDto;
 import com.github.punnfect.workout_tracker.entities.*;
 import com.github.punnfect.workout_tracker.repository.*;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -60,8 +60,9 @@ public class WorkoutService {
         workout.setTimeEnter(timeEnter);
         workout.setTimeLeave(timeLeave);
 
-        exerciseSetRepo.deleteAll(workout.getExerciseSets());
-        cardioSessionRepo.deleteAll(workout.getCardioSessions());
+        workout.getExerciseSets().clear();
+        workout.getCardioSessions().clear();
+        workoutRepo.flush();
 
 
         if (exerciseSets != null) {
@@ -124,7 +125,9 @@ public class WorkoutService {
 
     //returns the entire workout by ID
     public Optional<Workout> getWorkoutDetails(Long workoutId) {
-        return workoutRepo.findById(workoutId);
+        User currentUser = getCurrentUser();
+        return workoutRepo.findById(workoutId)
+                .filter(workout -> workout.getUser().getId().equals(currentUser.getId()));
     }
 
     //deletes an entire workout and all associated sets/sessions
