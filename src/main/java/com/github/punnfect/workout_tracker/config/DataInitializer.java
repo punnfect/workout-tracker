@@ -265,9 +265,118 @@ public class DataInitializer implements CommandLineRunner {
             }
             sampleWorkouts.add(w7);
 
+
+            // Workout 8
+            Workout w8 = new Workout();
+            w8.setUser(adminUser);
+            w8.setTitle("Volume Day");
+            w8.setWorkoutDate(LocalDate.now().minusDays(8));
+            w8.setTimeEnter(LocalTime.of(16, 0));
+            w8.setTimeLeave(LocalTime.of(17, 0));
+            w8.setNotes("Focus on form.");
+            w8.setExerciseSets(new ArrayList<>());
+            if (deadlift != null) {
+                w8.getExerciseSets().add(createSet(w8, deadlift, 1, new BigDecimal("135.0"), 5, "Warm-up"));
+                w8.getExerciseSets().add(createSet(w8, deadlift, 2, new BigDecimal("225.0"), 5, null));
+                w8.getExerciseSets().add(createSet(w8, deadlift, 3, new BigDecimal("275.0"), 5, null));
+                w8.getExerciseSets().add(createSet(w8, deadlift, 4, new BigDecimal("275.0"), 5, null));
+                w8.getExerciseSets().add(createSet(w8, deadlift, 5, new BigDecimal("275.0"), 5, "Felt good"));
+            }
+            sampleWorkouts.add(w8);
+
+// Workout 9
+            Workout w9 = new Workout();
+            w9.setUser(adminUser);
+            w9.setTitle("Light Technique");
+            w9.setWorkoutDate(LocalDate.now().minusDays(9));
+            w9.setTimeEnter(LocalTime.of(18, 0));
+            w9.setTimeLeave(LocalTime.of(18, 45));
+            w9.setNotes("Speed pulls.");
+            w9.setExerciseSets(new ArrayList<>());
+            if (deadlift != null) {
+                w9.getExerciseSets().add(createSet(w9, deadlift, 1, new BigDecimal("135.0"), 5, "Warm-up"));
+                w9.getExerciseSets().add(createSet(w9, deadlift, 2, new BigDecimal("185.0"), 3, null));
+                w9.getExerciseSets().add(createSet(w9, deadlift, 3, new BigDecimal("185.0"), 3, null));
+                w9.getExerciseSets().add(createSet(w9, deadlift, 4, new BigDecimal("185.0"), 3, null));
+                w9.getExerciseSets().add(createSet(w9, deadlift, 5, new BigDecimal("185.0"), 3, null));
+                w9.getExerciseSets().add(createSet(w9, deadlift, 6, new BigDecimal("185.0"), 3, null));
+            }
+            sampleWorkouts.add(w9);
+
+// Workout 10
+            Workout w10 = new Workout();
+            w10.setUser(adminUser);
+            w10.setTitle("Pyramid Sets");
+            w10.setWorkoutDate(LocalDate.now().minusDays(10));
+            w10.setTimeEnter(LocalTime.of(17, 30));
+            w10.setTimeLeave(LocalTime.of(18, 30));
+            w10.setNotes("Working up and back down.");
+            w10.setExerciseSets(new ArrayList<>());
+            if (deadlift != null) {
+                w10.getExerciseSets().add(createSet(w10, deadlift, 1, new BigDecimal("135.0"), 5, "Warm-up"));
+                w10.getExerciseSets().add(createSet(w10, deadlift, 2, new BigDecimal("225.0"), 5, null));
+                w10.getExerciseSets().add(createSet(w10, deadlift, 3, new BigDecimal("275.0"), 3, null));
+                w10.getExerciseSets().add(createSet(w10, deadlift, 4, new BigDecimal("300.0"), 2, null));
+                w10.getExerciseSets().add(createSet(w10, deadlift, 5, new BigDecimal("275.0"), 3, null));
+                w10.getExerciseSets().add(createSet(w10, deadlift, 6, new BigDecimal("225.0"), 5, null));
+            }
+            sampleWorkouts.add(w10);
+
+// Workout 11
+            Workout w11 = new Workout();
+            w11.setUser(adminUser);
+            w11.setTitle("Heavy Triples");
+            w11.setWorkoutDate(LocalDate.now().minusDays(11));
+            w11.setTimeEnter(LocalTime.of(16, 15));
+            w11.setTimeLeave(LocalTime.of(17, 0));
+            w11.setNotes("Building strength.");
+            w11.setExerciseSets(new ArrayList<>());
+            if (deadlift != null) {
+                w11.getExerciseSets().add(createSet(w11, deadlift, 1, new BigDecimal("135.0"), 5, "Warm-up"));
+                w11.getExerciseSets().add(createSet(w11, deadlift, 2, new BigDecimal("225.0"), 3, null));
+                w11.getExerciseSets().add(createSet(w11, deadlift, 3, new BigDecimal("295.0"), 3, null));
+                w11.getExerciseSets().add(createSet(w11, deadlift, 4, new BigDecimal("295.0"), 3, null));
+                w11.getExerciseSets().add(createSet(w11, deadlift, 5, new BigDecimal("295.0"), 3, "Tough last set"));
+            }
+            sampleWorkouts.add(w11);
+
+// Workout 12
+            Workout w12 = new Workout();
+            w12.setUser(adminUser);
+            w12.setTitle("Paused Deadlifts");
+            w12.setWorkoutDate(LocalDate.now().minusDays(12));
+            w12.setTimeEnter(LocalTime.of(17, 0));
+            w12.setTimeLeave(LocalTime.of(17, 45));
+            w12.setNotes("Pausing below the knee.");
+            w12.setExerciseSets(new ArrayList<>());
+            if (deadlift != null) {
+                w12.getExerciseSets().add(createSet(w12, deadlift, 1, new BigDecimal("135.0"), 5, "Warm-up"));
+                w12.getExerciseSets().add(createSet(w12, deadlift, 2, new BigDecimal("205.0"), 4, null));
+                w12.getExerciseSets().add(createSet(w12, deadlift, 3, new BigDecimal("205.0"), 4, null));
+                w12.getExerciseSets().add(createSet(w12, deadlift, 4, new BigDecimal("205.0"), 4, null));
+            }
+            sampleWorkouts.add(w12);
+
+// Workout 13
+            Workout w13 = new Workout();
+            w13.setUser(adminUser);
+            w13.setTitle("AMRAP Day");
+            w13.setWorkoutDate(LocalDate.now().minusDays(13));
+            w13.setTimeEnter(LocalTime.of(18, 0));
+            w13.setTimeLeave(LocalTime.of(18, 45));
+            w13.setNotes("As many reps as possible on last set.");
+            w13.setExerciseSets(new ArrayList<>());
+            if (deadlift != null) {
+                w13.getExerciseSets().add(createSet(w13, deadlift, 1, new BigDecimal("135.0"), 5, "Warm-up"));
+                w13.getExerciseSets().add(createSet(w13, deadlift, 2, new BigDecimal("225.0"), 5, null));
+                w13.getExerciseSets().add(createSet(w13, deadlift, 3, new BigDecimal("275.0"), 3, null));
+                w13.getExerciseSets().add(createSet(w13, deadlift, 4, new BigDecimal("305.0"), 8, "AMRAP set, felt strong"));
+            }
+            sampleWorkouts.add(w13);
+
             // Save all workouts
             workoutRepo.saveAll(sampleWorkouts);
-            log.info("Created 7 sample workouts.");
+            log.info("Created 13 sample workouts.");
         }
 
     }
