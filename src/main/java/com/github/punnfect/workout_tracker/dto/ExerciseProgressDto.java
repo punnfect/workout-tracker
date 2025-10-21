@@ -1,14 +1,16 @@
 package com.github.punnfect.workout_tracker.dto;
 
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.util.List;
 
+// complete progress info including a list of all datapoints
 @Data
+@AllArgsConstructor
 public class ExerciseProgressDto {
-
-    private LocalDate date;
-    private BigDecimal weight;
-    private Integer reps;
+    private String exerciseName;
+    private List<ExerciseProgressPointDto> dataPoints;
+    private ExerciseProgressStatsDto stats;
 }
