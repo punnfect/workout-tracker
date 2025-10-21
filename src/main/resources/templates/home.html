@@ -70,13 +70,41 @@
         </form>
     </div>
 
-    <h2>Workout History</h2>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Workout History</h2>
+    </div>
+
+    <!-- Search Filter -->
+    <div class="card bg-light p-3 mb-3" th:unless="${workouts.isEmpty()}">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-5">
+                <label for="titleSearch" class="form-label">Search by Title</label>
+                <input type="text" id="titleSearch" class="form-control" placeholder="Type to search workouts...">
+            </div>
+            <div class="col-md-3">
+                <label for="dateSearch" class="form-label">Filter by Date</label>
+                <input type="date" id="dateSearch" class="form-control">
+            </div>
+            <div class="col-md-2">
+                <button type="button" id="clearSearch" class="btn btn-outline-secondary w-100">Clear Filters</button>
+            </div>
+            <div class="col-md-2">
+                <small class="text-muted" id="resultCount"></small>
+            </div>
+        </div>
+    </div>
+
     <div th:if="${workouts.isEmpty()}" class="alert alert-info mt-3">
         You haven't logged any workouts yet.
     </div>
 
-    <div class="list-group mt-3" th:unless="${workouts.isEmpty()}">
-        <div th:each="workout : ${workouts}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+    <div id="noResultsMessage" class="alert alert-warning mt-3" style="display: none;">
+        No workouts found matching your search criteria.
+    </div>
+
+    <div class="list-group mt-3" th:unless="${workouts.isEmpty()}" id="workoutList">
+        <div th:each="workout : ${workouts}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center workout-item"
+             th:attr="data-title=${workout.title}, data-date=${#temporals.format(workout.workoutDate, 'yyyy-MM-dd')}">
             <a th:href="@{/workout/{id}(id=${workout.id})}" class="text-decoration-none text-dark flex-grow-1">
                 <h5 class="mb-1" th:text="${workout.title}">Workout Title</h5>
                 <small th:text="${#temporals.format(workout.workoutDate, 'MMMM dd, yyyy')}">Date</small>
@@ -89,5 +117,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/home.js}"></script>
+
 </body>
 </html>
