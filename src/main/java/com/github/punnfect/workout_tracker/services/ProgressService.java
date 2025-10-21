@@ -33,41 +33,61 @@ public class ProgressService {
         this.userRepo = userRepo;
     }
 
-    // gets all exercise data from specified timeline
+    //gets all exercise progress data for specified range
     @Transactional(readOnly = true)
     public ExerciseProgressDto getExerciseProgress(Long exerciseListId,
                                                    LocalDate startDate,
                                                    LocalDate endDate) {
         User currentUser = getCurrentUser();
 
-        // Get exercise name
+
         String exerciseName = exerciseListRepo.findById(exerciseListId)
                 .map(ex -> ex.getName())
                 .orElseThrow(() -> new RuntimeException("Exercise not found with id: " + exerciseListId));
 
-        // Get all sets for this exercise in the date range
+
         List<ExerciseSet> sets;
         if (startDate != null && endDate != null) {
             sets = exerciseSetRepo.findExerciseProgressByDateRange(
                     exerciseListId, currentUser, startDate, endDate);
         } else {
-            // If no date range specified, get all time
+
             sets = exerciseSetRepo.findAllExerciseProgress(exerciseListId, currentUser);
         }
 
-        // Convert to data points
+        // Convert to data points and only keep the best set per day
+        // Best set = highest weight, then if tied, highest reps
         List<ExerciseProgressPointDto> dataPoints = sets.stream()
-                .map(set -> {
-                    BigDecimal volume = set.getWeight() != null && set.getReps() != null
-                            ? set.getWeight().multiply(BigDecimal.valueOf(set.getReps()))
+                .collect(Collectors.groupingBy(set -> set.getWorkout().getWorkoutDate()))
+                .values()
+                .stream()
+                .map(setsPerDay -> {
+
+                    ExerciseSet bestSet = setsPerDay.stream()
+                            .max((s1, s2) -> {
+                                int weightComparison = s1.getWeight().compareTo(s2.getWeight());
+                                if (weightComparison != 0) {
+                                    return weightComparison;
+                                }
+                                // If weights are equal, compare reps
+                                return Integer.compare(s1.getReps(), s2.getReps());
+                            })
+                            .orElse(null);
+
+                    if (bestSet == null) return null;
+
+                    BigDecimal volume = bestSet.getWeight() != null && bestSet.getReps() != null
+                            ? bestSet.getWeight().multiply(BigDecimal.valueOf(bestSet.getReps()))
                             : BigDecimal.ZERO;
                     return new ExerciseProgressPointDto(
-                            set.getWorkout().getWorkoutDate(),
-                            set.getWeight(),
-                            set.getReps(),
+                            bestSet.getWorkout().getWorkoutDate(),
+                            bestSet.getWeight(),
+                            bestSet.getReps(),
                             volume
                     );
                 })
+                .filter(point -> point != null)
+                .sorted((p1, p2) -> p1.getDate().compareTo(p2.getDate()))
                 .collect(Collectors.toList());
 
         // Calculate statistics
@@ -76,7 +96,7 @@ public class ProgressService {
         return new ExerciseProgressDto(exerciseName, dataPoints, stats);
     }
 
-    // calculates summary of stats
+    //calculates summary stats
     private ExerciseProgressStatsDto calculateStats(List<ExerciseSet> sets) {
         if (sets.isEmpty()) {
             return new ExerciseProgressStatsDto();
@@ -108,7 +128,7 @@ public class ProgressService {
             stats.setMaxRepsDate(maxRepsSet.getWorkout().getWorkoutDate());
         }
 
-        // Find max volume (weight × reps)
+        // Find max volume
         ExerciseSet maxVolumeSet = sets.stream()
                 .filter(s -> s.getWeight() != null && s.getReps() != null)
                 .max((s1, s2) -> {
@@ -129,7 +149,7 @@ public class ProgressService {
         return stats;
     }
 
-    // helper method for confirming user
+    // helper method for getting user
     private User getCurrentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
