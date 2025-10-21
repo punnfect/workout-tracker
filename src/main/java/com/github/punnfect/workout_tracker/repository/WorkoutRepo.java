@@ -16,12 +16,14 @@ public interface WorkoutRepo extends JpaRepository<Workout, Long> {
     //Will list a users workouts from new to old
     List<Workout> findByUserOrderByWorkoutDateDesc(User user);
 
+    //efficient query for pulling exercises
     @Query("SELECT DISTINCT w FROM Workout w " +
             "LEFT JOIN FETCH w.exerciseSets es " +
             "LEFT JOIN FETCH es.exerciseList " +
             "WHERE w.id = :id")
     Optional<Workout> findByIdWithExerciseSets(@Param("id") Long id);
 
+    //efficient query for pulling cardio sessions
     @Query("SELECT DISTINCT w FROM Workout w " +
             "LEFT JOIN FETCH w.cardioSessions cs " +
             "LEFT JOIN FETCH cs.cardioList " +
